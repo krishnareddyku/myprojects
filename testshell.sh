@@ -1,3 +1,5 @@
+#!/bin/bash
+
 date
 pwd
 w
