@@ -3,4 +3,6 @@
 date
 pwd
 w
-hotname
+hostname
+
+ls -ltr
