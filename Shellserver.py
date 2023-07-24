@@ -35,7 +35,7 @@ class MyHTTPRequestHandler(BaseHTTPRequestHandler):
         user_name = form_data.get('user_name', [''])[0]
         user_email = form_data.get('user_email', [''])[0]
 
-        # Execute the shell script with user inputs as arguments
+        # Execute the shell script with user inputs as separate arguments
         try:
             subprocess.run(['./example_script.sh', user_name, user_email], check=True, capture_output=True, text=True)
             print("Shell script executed successfully.")
@@ -54,9 +54,10 @@ class MyHTTPRequestHandler(BaseHTTPRequestHandler):
 def run_server():
     host = 'localhost'
     port = 8000
+    server_address = (host, port)
 
     # Create and start the HTTP server
-    server = HTTPServer((host, port), MyHTTPRequestHandler)
+    server = HTTPServer(server_address, MyHTTPRequestHandler)
     print(f"Server started on {host}:{port}")
 
     try:
