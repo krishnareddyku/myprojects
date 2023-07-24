@@ -1,15 +1,27 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import os
 import cgi
 
 class MyHTTPRequestHandler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        # Set response status code
-        self.send_response(200)
-        
-        # Set response headers
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
+    def do_GET(self):
+        if self.path == '/':
+            self.path = '/index.html'
+        try:
+            # Open the static file requested
+            filepath = os.getcwd() + self.path
+            with open(filepath, 'rb') as file:
+                content = file.read()
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            self.wfile.write(content)
+        except FileNotFoundError:
+            self.send_response(404)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            self.wfile.write(b'404 Not Found')
 
+    def do_POST(self):
         # Get the content length of the POST data
         content_length = int(self.headers['Content-Length'])
 
@@ -25,9 +37,12 @@ class MyHTTPRequestHandler(BaseHTTPRequestHandler):
 
         # Send a response back to the browser
         response_message = f"Received data: {data_input_value}"
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
         self.wfile.write(response_message.encode('utf-8'))
 
-if __name__ == '__main__':
+def run_server():
     host = 'localhost'
     port = 8000
 
@@ -41,3 +56,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         # Shut down the server on Ctrl+C
         server.shutdown()
+
+if __name__ == '__main__':
+    run_server()
